@@ -1,0 +1,2 @@
+# sample-sidekiq
+sidekiqのサンプル
