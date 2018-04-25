@@ -199,11 +199,82 @@ $ sudo docker-compose up -d
 
 Webブラウザで http://localhost:3000 を開くか `curl` コマンドでGETリクエストすると、Welcomeページが表示されます。
 
-TODO: 作成手順を説明する。
+### ワーカーを作成
+
+Sidekiqで実行するワーカーを作成します。
+
+`rails g` コマンドで、Helloワーカーを作成します。
+
+```
+$ sudo docker-compose exec app rails g sidekiq:worker Hello
+```
+
+これにより、ワーカーとそのテスト・コードが作成されます。今回はワーカーのみ実装します。 `app/worker/hello_worker.rb` ファイルに `puts "hello"` コードを追加します。結果、次のように修正します。
+
+```
+$ cat app/workers/hello_worker.rb
+class HelloWorker
+  include Sidekiq::Worker
+
+  def perform(*args)
+    puts "hello"
+  end
+end
+```
+
+### ワーカーを実行
+
+いよいよ、作成したワーカーをSidekiqで実行してみます。
+
+Sidekiqは変更したソースコードを自動では読み込んでくれないので、いったんコンテナを終了します。
+
+```
+$ sudo docker-compose down -v
+```
+
+コンテナを起動します。
+
+```
+$ sudo docker-compose up -d
+```
+
+appコンテナのRailsコンソールを起動します。
+
+```
+$ sudo docker-compose exec app rails c
+```
+
+ワーカー・クラスの `perform_async` メソッドを呼び出すことで、ワーカーをキューに登録します。
+
+```
+> HelloWorker.perform_async
+```
+
+正常に登録された場合、IDのような文字列が表示されます。エラーとなってしまいスタックとレースが表示された場合、これまでに作成したファイルや手順のどこかが間違えています。
+
+今、キューに登録したワーカーはすぐに実行されます。workerコンテナのログを確認します。
+
+```
+$ sudo docker-compose logs worker
+Attaching to sample-sidekiq_worker_1
+worker_1  | 2018-04-25T10:30:08.008Z 1 TID-gses4fdh1 INFO: Booting Sidekiq 5.1.3 with redis options {:url=>"redis://redis:6379", :id=>"Sidekiq-server-PID-1"}
+worker_1  | 2018-04-25T10:30:08.111Z 1 TID-gses4fdh1 INFO: Running in ruby 2.5.1p57 (2018-03-29 revision 63029)[x86_64-linux]
+worker_1  | 2018-04-25T10:30:08.111Z 1 TID-gses4fdh1 INFO: See LICENSE and the LGPL-3.0 for licensing details.
+worker_1  | 2018-04-25T10:30:08.111Z 1 TID-gses4fdh1 INFO: Upgrade to Sidekiq Pro for more features and support: http://sidekiq.org
+worker_1  | 2018-04-25T10:30:08.114Z 1 TID-gses4fdh1 INFO: Starting processing, hit Ctrl-C to stop
+worker_1  | 2018-04-25T10:30:25.434Z 1 TID-gsesimoz1 HelloWorker JID-4c48fc655e11bc9ee2cbe82b INFO: start
+worker_1  | hello
+worker_1  | 2018-04-25T10:30:25.441Z 1 TID-gsesimoz1 HelloWorker JID-4c48fc655e11bc9ee2cbe82b INFO: done: 0.005sec
+```
+
+`hello` が出力されており、ワーカーが実行されたことが分かります。
 
 ## Links
 
-TODO: 参照先リンク
+- [mperham/sidekiq: Simple, efficient background processing for Ruby](https://github.com/mperham/sidekiq)
+- [sidekiqの使い方 - Qiita](https://qiita.com/nysalor/items/94ecd53c2141d1c27d1f)
+- [Sidekiq について基本と1年半運用してのあれこれ - まっしろけっけ](http://shiro-16.hatenablog.com/entry/2015/10/12/192412)
+- [Sidekiq アンチパターン: 序 - SmartHR Tech Blog](http://tech.smarthr.jp/entry/2017/04/20/165555)
 
 ## Maintainer
 
