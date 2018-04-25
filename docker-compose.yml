@@ -5,7 +5,18 @@ services:
     build: .
     environment:
       - "RAILS_ENV=development"
+      - "REDIS_URL=redis://redis:6379"
     volumes:
       - ".:/var/myapp"
     ports:
       - "3000:3000"
+  worker:
+    build: .
+    environment:
+      - "RAILS_ENV=development"
+      - "REDIS_URL=redis://redis:6379"
+    volumes:
+      - ".:/var/myapp"
+    depends_on:
+      - "redis"
+    command: sidekiq
