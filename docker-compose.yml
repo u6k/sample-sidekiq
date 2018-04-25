@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    environment:
+      - "RAILS_ENV=development"
+      - "REDIS_URL=redis://redis:6379"
+    volumes:
+      - ".:/var/myapp"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - "redis"
+  worker:
+    build: .
+    environment:
+      - "RAILS_ENV=development"
+      - "REDIS_URL=redis://redis:6379"
+    volumes:
+      - ".:/var/myapp"
+    depends_on:
+      - "redis"
+    command: sidekiq
+  redis:
+    image: redis:4.0
+    volumes:
+      - "redis:/data"
+    command: redis-server --appendonly yes
+
+volumes:
+  redis:
+    driver: local
