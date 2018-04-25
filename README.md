@@ -38,6 +38,32 @@ Server:
 
 まっさらの状態からSidekiqのワーカーを実行するまでの手順を説明します。
 
+### Railsプロジェクトを作成
+
+Railsプロジェクトを作成します。RubyがインストールされているPCであれば `rails new .` で済みますが、ここではrubyコンテナの中でRailsプロジェクトを作成します。
+
+まず、rubyコンテナを起動します。
+
+```
+$ sudo docker run --rm -it -v $(pwd):/var/myapp -w /var/myapp ruby bash
+```
+
+`-v` オプションで、カレント・フォルダをコンテナ内の `/var/myapp` フォルダに割り当てます。そして `-w` オプションで、コンテナ起動直後の作業フォルダを `/var/myapp` フォルダに設定しています。
+
+Ruby on Railsをインストールします。
+
+```
+# gem install rails
+```
+
+カレント・フォルダにRailsプロジェクトを作成します。
+
+```
+# rails new .
+```
+
+作成したら、 `ls` でファイルを確認してみます。ファイルを確認したら、 `Ctrl-d` でコンテナからログアウトします。
+
 TODO: 作成手順を説明する。
 
 ## Links
