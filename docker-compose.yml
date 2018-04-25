@@ -10,6 +10,8 @@ services:
       - ".:/var/myapp"
     ports:
       - "3000:3000"
+    depends_on:
+      - "redis"
   worker:
     build: .
     environment:
@@ -20,3 +22,12 @@ services:
     depends_on:
       - "redis"
     command: sidekiq
+  redis:
+    image: redis:4.0
+    volumes:
+      - "redis:/data"
+    command: redis-server --appendonly yes
+
+volumes:
+  redis:
+    driver: local
