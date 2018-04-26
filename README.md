@@ -1,9 +1,17 @@
-# Sidekiqサンプル _(sample-sidekiq)_
+# Sidekiq on Dockerサンプル _(sample-sidekiq)_
 
 [![GitHub tag](https://img.shields.io/github/tag/u6k/sample-sidekiq.svg)](https://github.com/u6k/sample-sidekiq/releases)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
-> Sidekiqのサンプル。
+> SidekiqをDockerで動作させるサンプル
+
+Rubyでジョブ管理を行おうと考えたとき、[Resque](https://github.com/resque/resque)、[Delayed::Job](https://github.com/collectiveidea/delayed_job)、[Sidekiq](https://github.com/mperham/sidekiq)などの仕組みがあります。このサンプルでは、その中でもSidekiqをDockerコンテナで動作させてみます。
+
+## Background
+
+Railsで定期的にジョブを実行したいと思い方法を探していると、[Sidekiq-Cron](https://github.com/ondrejbartas/sidekiq-cron)や[sidekiq-scheduler](https://github.com/moove-it/sidekiq-scheduler)の解説が多く見られます。このため、Sidekiqを使うことにしました。
+
+なお、Rails 5ではジョブ実装の共通的な仕組みとして[Active Job](https://railsguides.jp/active_job_basics.html)が使えますが、Active Jobがsidekiq-schedulerなどで使えるか分からなかったので、今回はSidekiqをそのまま使うことにしました。
 
 ## Install
 
