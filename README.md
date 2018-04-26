@@ -207,6 +207,33 @@ $ sudo docker-compose up -d
 
 Webブラウザで http://localhost:3000 を開くか `curl` コマンドでGETリクエストすると、Welcomeページが表示されます。
 
+### ダッシュボードへのルートを設定
+
+Sidekiqはジョブがどのような状態かを確認するためのダッシュボードを提供しています。ダッシュボードにアクセスするには、 `config/routes.rb` ファイルにルートを設定します。
+
+`sidekiq/web` をrequireします。
+
+```
+require 'sidekiq/web'
+```
+
+ダッシュボードへのルートを設定します。次のように設定すると、 http://localhost:3000/sidekiq でダッシュボードにアクセスできます。
+
+```
+mount Sidekiq::Web, at: '/sidekiq'
+```
+
+結果、 `config/routes.rb` ファイルは次のようになります。
+
+```
+$ cat config/routes.rb
+require 'sidekiq/web'
+
+Rails.application.routes.draw do
+  mount Sidekiq::Web, at: '/sidekiq'
+end
+```
+
 ### ワーカーを作成
 
 Sidekiqで実行するワーカーを作成します。
@@ -258,7 +285,7 @@ $ sudo docker-compose exec app rails c
 > HelloWorker.perform_async
 ```
 
-正常に登録された場合、IDのような文字列が表示されます。エラーとなってしまいスタックとレースが表示された場合、これまでに作成したファイルや手順のどこかが間違えています。
+正常に登録された場合、IDのような文字列が表示されます。エラーとなってしまいスタックトレースが表示された場合、これまでに作成したファイルや手順のどこかが間違えています。
 
 今、キューに登録したワーカーはすぐに実行されます。workerコンテナのログを確認します。
 
