@@ -1,9 +1,17 @@
-# Sidekiqサンプル _(sample-sidekiq)_
+# Sidekiq on Dockerサンプル _(sample-sidekiq)_
 
 [![GitHub tag](https://img.shields.io/github/tag/u6k/sample-sidekiq.svg)](https://github.com/u6k/sample-sidekiq/releases)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
-> Sidekiqのサンプル。
+> SidekiqをDockerで動作させるサンプル
+
+Rubyでジョブ管理を行おうと考えたとき、[Resque](https://github.com/resque/resque)、[Delayed::Job](https://github.com/collectiveidea/delayed_job)、[Sidekiq](https://github.com/mperham/sidekiq)などの仕組みがあります。このサンプルでは、その中でもSidekiqをDockerコンテナで動作させてみます。
+
+## Background
+
+Railsで定期的にジョブを実行したいと思い方法を探していると、[Sidekiq-Cron](https://github.com/ondrejbartas/sidekiq-cron)や[sidekiq-scheduler](https://github.com/moove-it/sidekiq-scheduler)の解説が多く見られます。このため、Sidekiqを使うことにしました。
+
+なお、Rails 5ではジョブ実装の共通的な仕組みとして[Active Job](https://railsguides.jp/active_job_basics.html)が使えますが、Active Jobがsidekiq-schedulerなどで使えるか分からなかったので、今回はSidekiqをそのまま使うことにしました。
 
 ## Install
 
@@ -197,7 +205,36 @@ $ sudo docker-compose build
 $ sudo docker-compose up -d
 ```
 
-Webブラウザで http://localhost:3000 を開くか `curl` コマンドでGETリクエストすると、Welcomeページが表示されます。
+Webブラウザで http://localhost:3000 を開くか `curl` コマンドでGETリクエストすると、次のようにWelcomeページが表示されます。
+
+![rails welcome page](doc/img/rails-welcome-page.jpeg)
+
+### ダッシュボードへのルートを設定
+
+Sidekiqはジョブがどのような状態かを確認するためのダッシュボードを提供しています。ダッシュボードにアクセスするには、 `config/routes.rb` ファイルにルートを設定します。
+
+`sidekiq/web` をrequireします。
+
+```
+require 'sidekiq/web'
+```
+
+ダッシュボードへのルートを設定します。次のように設定すると、 http://localhost:3000/sidekiq でダッシュボードにアクセスできます。
+
+```
+mount Sidekiq::Web, at: '/sidekiq'
+```
+
+結果、 `config/routes.rb` ファイルは次のようになります。
+
+```
+$ cat config/routes.rb
+require 'sidekiq/web'
+
+Rails.application.routes.draw do
+  mount Sidekiq::Web, at: '/sidekiq'
+end
+```
 
 ### ワーカーを作成
 
@@ -250,7 +287,7 @@ $ sudo docker-compose exec app rails c
 > HelloWorker.perform_async
 ```
 
-正常に登録された場合、IDのような文字列が表示されます。エラーとなってしまいスタックとレースが表示された場合、これまでに作成したファイルや手順のどこかが間違えています。
+正常に登録された場合、IDのような文字列が表示されます。エラーとなってしまいスタックトレースが表示された場合、これまでに作成したファイルや手順のどこかが間違えています。
 
 今、キューに登録したワーカーはすぐに実行されます。workerコンテナのログを確認します。
 
@@ -268,6 +305,10 @@ worker_1  | 2018-04-25T10:30:25.441Z 1 TID-gsesimoz1 HelloWorker JID-4c48fc655e1
 ```
 
 `hello` が出力されており、ワーカーが実行されたことが分かります。
+
+また、 http://localhost:3000/sidekiq にアクセスすると、次のようにダッシュボードが表示されます。
+
+![sidekiq dashboard](doc/img/sidekiq-dashboard.jpeg)
 
 ## Links
 
