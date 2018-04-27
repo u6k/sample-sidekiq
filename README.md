@@ -207,7 +207,7 @@ $ sudo docker-compose up -d
 
 Webブラウザで http://localhost:3000 を開くか `curl` コマンドでGETリクエストすると、次のようにWelcomeページが表示されます。
 
-TODO 画像
+![rails welcome page](doc/img/rails-welcome-page.png)
 
 ### ダッシュボードへのルートを設定
 
@@ -308,7 +308,7 @@ worker_1  | 2018-04-25T10:30:25.441Z 1 TID-gsesimoz1 HelloWorker JID-4c48fc655e1
 
 また、 http://localhost:3000/sidekiq にアクセスすると、次のようにダッシュボードが表示されます。
 
-TODO 画像
+![sidekiq dashboard](doc/img/sidekiq-dashboard.png)
 
 ## Links
 
