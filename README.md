@@ -400,7 +400,7 @@ Cronページを見ると、登録したジョブが表示されます。
   - [GitHub](https://github.com/u6k)
   - [Qiita](http://qiita.com/u6k)
   - [Twitter](https://twitter.com/u6k_yu1)
-  - [Facebook](https://www.facebook.com/yuuichi.naono)
+  - [Facebook](https://www.facebook.com/yuuichi.naono)
 
 ## Contribute
 
