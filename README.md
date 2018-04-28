@@ -354,6 +354,29 @@ $ sudo docker-compose exec app rails c
 
 ジョブを定期実行する場合は、 `Sidekiq::Cron::Job#create` を呼び出します。
 
+```
+> Sidekiq::Cron::Job.create name: "Hello Job", cron: "* * * * *", class: "HelloWorker"
+2018-04-27T04:26:05.562Z 50 TID-govsxyfv2 INFO: Cron Jobs - add job with name: Hello Job
+=> true
+```
+
+これでジョブの定期実行が開始されます。しばらくしてから、workerコンテナのログを確認します。
+
+```
+$ sudo docker-compose logs worker
+worker_1  | 2018-04-27T04:27:25.246Z 1 TID-grpm2wxhh HelloWorker JID-f746b9ad3c0740cd2bbee4fb INFO: start
+worker_1  | hello
+worker_1  | 2018-04-27T04:27:25.267Z 1 TID-grpm2wxhh HelloWorker JID-f746b9ad3c0740cd2bbee4fb INFO: done: 0.02 sec
+worker_1  | 2018-04-27T04:28:05.080Z 1 TID-grpm2x371 HelloWorker JID-51fce69dc54f378fad381750 INFO: start
+worker_1  | hello
+worker_1  | 2018-04-27T04:28:05.081Z 1 TID-grpm2x371 HelloWorker JID-51fce69dc54f378fad381750 INFO: done: 0.001 sec
+worker_1  | 2018-04-27T04:29:15.094Z 1 TID-grpm2x0dx HelloWorker JID-f0d933d3cda1de168afe4914 INFO: start
+worker_1  | hello
+worker_1  | 2018-04-27T04:29:15.096Z 1 TID-grpm2x0dx HelloWorker JID-f0d933d3cda1de168afe4914 INFO: done: 0.002 sec
+```
+
+約1分ごとにジョブが実行されています。
+
 ## Links
 
 - [mperham/sidekiq: Simple, efficient background processing for Ruby](https://github.com/mperham/sidekiq)
