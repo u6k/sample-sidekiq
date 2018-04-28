@@ -310,6 +310,36 @@ worker_1  | 2018-04-25T10:30:25.441Z 1 TID-gsesimoz1 HelloWorker JID-4c48fc655e1
 
 ![sidekiq dashboard](doc/img/sidekiq-dashboard.jpeg)
 
+### SidekiqをCron化
+
+ここまでの作業で、Sidekiqを使ったジョブの実行ができるようになりました。単純にジョブを実行するだけであれば、ここまでで終わりです。
+
+ここからは、sidekiq-cronを使ってジョブを定期的に実行してみます。
+
+### `Gemfile` と `routes.rb` を修正
+
+sidekiq-cronの設定は簡単で、2ファイルを修正するだけです。
+
+`Gemfile` ファイルで、 `sidekiq` の後に `sidekiq-cron` を追加します。
+
+```
+$ cat Gemfile
+
+...(略)...
+gem 'sidekiq'
+gem 'sidekiq-cron'
+...(略)...
+```
+
+`config/routes.rb` ファイルで、 `require 'sidekiq/web'` の後に `require 'sidekiq/cron/web'` を追加します。
+
+```
+$ cat config/routes.rb
+require 'sidekiq/web'
+require 'sidekiq/cron/web'
+...(略)...
+```
+
 ## Links
 
 - [mperham/sidekiq: Simple, efficient background processing for Ruby](https://github.com/mperham/sidekiq)
