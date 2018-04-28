@@ -377,12 +377,21 @@ worker_1  | 2018-04-27T04:29:15.096Z 1 TID-grpm2x0dx HelloWorker JID-f0d933d3cda
 
 約1分ごとにジョブが実行されています。
 
+どのようなジョブが定期実行されているかは、Sidekiqダッシュボードで確認できます。Sidekiqダッシュボードのメニューに"Cron"が追加されています。
+
+![sidekiq dashboard 2](doc/img/sidekiq-dashboard-2.jpeg)
+
+Cronページを見ると、登録したジョブが表示されます。
+
+![sidekiq dashboard cron](doc/img/sidekiq-dashboard-cron.jpeg)
+
 ## Links
 
 - [mperham/sidekiq: Simple, efficient background processing for Ruby](https://github.com/mperham/sidekiq)
 - [sidekiqの使い方 - Qiita](https://qiita.com/nysalor/items/94ecd53c2141d1c27d1f)
 - [Sidekiq について基本と1年半運用してのあれこれ - まっしろけっけ](http://shiro-16.hatenablog.com/entry/2015/10/12/192412)
 - [Sidekiq アンチパターン: 序 - SmartHR Tech Blog](http://tech.smarthr.jp/entry/2017/04/20/165555)
+- [ondrejbartas/sidekiq-cron: Scheduler / Cron for Sidekiq jobs](https://github.com/ondrejbartas/sidekiq-cron)
 
 ## Maintainer
 
@@ -391,7 +400,7 @@ worker_1  | 2018-04-27T04:29:15.096Z 1 TID-grpm2x0dx HelloWorker JID-f0d933d3cda
   - [GitHub](https://github.com/u6k)
   - [Qiita](http://qiita.com/u6k)
   - [Twitter](https://twitter.com/u6k_yu1)
-  - [Facebook](https://www.facebook.com/yuuichi.naono)
+  - [Facebook](https://www.facebook.com/yuuichi.naono)
 
 ## Contribute
 
