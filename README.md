@@ -352,7 +352,7 @@ $ sudo docker-compose up -d
 $ sudo docker-compose exec app rails c
 ```
 
-ジョブを定期実行する場合は、 `Sidekiq::Cron::Job#create` を呼び出します。
+ジョブを定期実行する場合は、 `Sidekiq::Cron::Job.create` を呼び出します。
 
 ```
 > Sidekiq::Cron::Job.create name: "Hello Job", cron: "* * * * *", class: "HelloWorker"
