@@ -310,18 +310,94 @@ worker_1  | 2018-04-25T10:30:25.441Z 1 TID-gsesimoz1 HelloWorker JID-4c48fc655e1
 
 ![sidekiq dashboard](doc/img/sidekiq-dashboard.jpeg)
 
+### SidekiqをCron化
+
+ここまでの作業で、Sidekiqを使ったジョブの実行ができるようになりました。単純にジョブを実行するだけであれば、ここまでで終わりです。
+
+ここからは、sidekiq-cronを使ってジョブを定期的に実行してみます。
+
+### `Gemfile` と `routes.rb` を修正
+
+sidekiq-cronの設定は簡単で、2ファイルを修正するだけです。
+
+`Gemfile` ファイルを修正します。 `sidekiq` の後に `sidekiq-cron` を追加します。
+
+```
+$ cat Gemfile
+
+...(略)...
+gem 'sidekiq'
+gem 'sidekiq-cron'
+...(略)...
+```
+
+`config/routes.rb` ファイルを修正します。 `require 'sidekiq/web'` の後に `require 'sidekiq/cron/web'` を追加します。
+
+```
+$ cat config/routes.rb
+require 'sidekiq/web'
+require 'sidekiq/cron/web'
+...(略)...
+```
+
+これで、ジョブを定期実行する準備は完了です。ワーカーを変更する必要はありません。
+
+### ジョブを定期実行
+
+Dockerコンテナを停止して、起動して、Railsコンソールを起動します。
+
+```
+$ sudo docker-compose down -v
+$ sudo docker-compose up -d
+$ sudo docker-compose exec app rails c
+```
+
+ジョブを定期実行する場合は、 `Sidekiq::Cron::Job.create` を呼び出します。
+
+```
+> Sidekiq::Cron::Job.create name: "Hello Job", cron: "* * * * *", class: "HelloWorker"
+2018-04-27T04:26:05.562Z 50 TID-govsxyfv2 INFO: Cron Jobs - add job with name: Hello Job
+=> true
+```
+
+これでジョブの定期実行が開始されます。しばらくしてから、workerコンテナのログを確認します。
+
+```
+$ sudo docker-compose logs worker
+worker_1  | 2018-04-27T04:27:25.246Z 1 TID-grpm2wxhh HelloWorker JID-f746b9ad3c0740cd2bbee4fb INFO: start
+worker_1  | hello
+worker_1  | 2018-04-27T04:27:25.267Z 1 TID-grpm2wxhh HelloWorker JID-f746b9ad3c0740cd2bbee4fb INFO: done: 0.02 sec
+worker_1  | 2018-04-27T04:28:05.080Z 1 TID-grpm2x371 HelloWorker JID-51fce69dc54f378fad381750 INFO: start
+worker_1  | hello
+worker_1  | 2018-04-27T04:28:05.081Z 1 TID-grpm2x371 HelloWorker JID-51fce69dc54f378fad381750 INFO: done: 0.001 sec
+worker_1  | 2018-04-27T04:29:15.094Z 1 TID-grpm2x0dx HelloWorker JID-f0d933d3cda1de168afe4914 INFO: start
+worker_1  | hello
+worker_1  | 2018-04-27T04:29:15.096Z 1 TID-grpm2x0dx HelloWorker JID-f0d933d3cda1de168afe4914 INFO: done: 0.002 sec
+```
+
+約1分ごとにジョブが実行されています。
+
+どのようなジョブが定期実行されているかは、Sidekiqダッシュボードで確認できます。Sidekiqダッシュボードのメニューに"Cron"が追加されています。
+
+![sidekiq dashboard 2](doc/img/sidekiq-dashboard-2.jpeg)
+
+Cronページを見ると、登録したジョブが表示されます。
+
+![sidekiq dashboard cron](doc/img/sidekiq-dashboard-cron.jpeg)
+
 ## Links
 
 - [mperham/sidekiq: Simple, efficient background processing for Ruby](https://github.com/mperham/sidekiq)
 - [sidekiqの使い方 - Qiita](https://qiita.com/nysalor/items/94ecd53c2141d1c27d1f)
 - [Sidekiq について基本と1年半運用してのあれこれ - まっしろけっけ](http://shiro-16.hatenablog.com/entry/2015/10/12/192412)
 - [Sidekiq アンチパターン: 序 - SmartHR Tech Blog](http://tech.smarthr.jp/entry/2017/04/20/165555)
+- [ondrejbartas/sidekiq-cron: Scheduler / Cron for Sidekiq jobs](https://github.com/ondrejbartas/sidekiq-cron)
 
 ## Maintainer
 
 - u6k
   - [Blog](https://blog.u6k.me)
-  - [GitHub](https://github.com/u6k)
+  - [GitHub](https://github.com/u6k)
   - [Qiita](http://qiita.com/u6k)
   - [Twitter](https://twitter.com/u6k_yu1)
   - [Facebook](https://www.facebook.com/yuuichi.naono)
