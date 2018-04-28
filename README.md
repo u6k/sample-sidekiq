@@ -397,7 +397,7 @@ Cronページを見ると、登録したジョブが表示されます。
 
 - u6k
   - [Blog](https://blog.u6k.me)
-  - [GitHub](https://github.com/u6k)
+  - [GitHub](https://github.com/u6k)
   - [Qiita](http://qiita.com/u6k)
   - [Twitter](https://twitter.com/u6k_yu1)
   - [Facebook](https://www.facebook.com/yuuichi.naono)
