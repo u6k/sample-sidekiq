@@ -320,7 +320,7 @@ worker_1  | 2018-04-25T10:30:25.441Z 1 TID-gsesimoz1 HelloWorker JID-4c48fc655e1
 
 sidekiq-cronの設定は簡単で、2ファイルを修正するだけです。
 
-`Gemfile` ファイルで、 `sidekiq` の後に `sidekiq-cron` を追加します。
+`Gemfile` ファイルを修正します。 `sidekiq` の後に `sidekiq-cron` を追加します。
 
 ```
 $ cat Gemfile
@@ -331,7 +331,7 @@ gem 'sidekiq-cron'
 ...(略)...
 ```
 
-`config/routes.rb` ファイルで、 `require 'sidekiq/web'` の後に `require 'sidekiq/cron/web'` を追加します。
+`config/routes.rb` ファイルを修正します。 `require 'sidekiq/web'` の後に `require 'sidekiq/cron/web'` を追加します。
 
 ```
 $ cat config/routes.rb
@@ -339,6 +339,20 @@ require 'sidekiq/web'
 require 'sidekiq/cron/web'
 ...(略)...
 ```
+
+これで、ジョブを定期実行する準備は完了です。ワーカーを変更する必要はありません。
+
+### ジョブを定期実行
+
+Dockerコンテナを停止して、起動して、Railsコンソールを起動します。
+
+```
+$ sudo docker-compose down -v
+$ sudo docker-compose up -d
+$ sudo docker-compose exec app rails c
+```
+
+ジョブを定期実行する場合は、 `Sidekiq::Cron::Job#create` を呼び出します。
 
 ## Links
 
